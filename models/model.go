@@ -34,7 +34,7 @@ func Setup() {
 	// err = db.Migrator().DropTable(&Cizzor{})
 	// if err != nil {
 	// 	fmt.Println(err)
-	// }
+	// }123456
 
 	err = db.AutoMigrate(&Cizzor{})
 	if err != nil {

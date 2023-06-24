@@ -16,6 +16,49 @@ type JsonResponse struct {
 	Data    interface{} `json:"data"`
 }
 
+func redirectCizzor(ctx *fiber.Ctx) error {
+	shortUrl := ctx.Params("short_url")
+
+	cizzor, err := models.GetCizzorByShortUrl(shortUrl)
+	fmt.Println(cizzor)
+
+	if err != nil {
+		if err.Error() == "record not found" {
+			return ctx.Status(fiber.StatusNotFound).JSON(
+				JsonResponse{
+					Status:  "error",
+					Message: err.Error(),
+					Data:    []models.Cizzor{},
+				})
+		}
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not get cizzor",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	// increase the count of the cizzor
+
+	cizzor.Count = cizzor.Count + 1
+
+	fmt.Println(cizzor)
+
+	_, err = models.UpdateCizzor(cizzor)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not update cizzor",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	return ctx.Redirect(cizzor.Url, fiber.StatusTemporaryRedirect)
+}
+
 func getAllRedirects(ctx *fiber.Ctx) error {
 	cizzors, err := models.GetAllCizzors()
 	if err != nil {
@@ -42,10 +85,20 @@ func getCizzorById(ctx *fiber.Ctx) error {
 
 	cizzorId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(
+		return ctx.Status(fiber.StatusBadRequest).JSON(
 			JsonResponse{
 				Status:  "error",
 				Message: "Could not parse id",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	_, err = models.UpdateCizzor(cizzor)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not update cizzor",
 				Data:    []models.Cizzor{},
 			})
 	}
@@ -74,11 +127,19 @@ func createCizzor(ctx *fiber.Ctx) error {
 	var cizzor models.Cizzor
 	var err error
 
-	if err := ctx.BodyParser(&cizzor); err != nil {
+	if err = ctx.BodyParser(&cizzor); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(
 			JsonResponse{
 				Status:  "error",
 				Message: "Error parsing json " + err.Error(),
+				Data:    []models.Cizzor{},
+			})
+	}
+	if err = pingURL(ctx, cizzor.Url); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Invalid url",
 				Data:    []models.Cizzor{},
 			})
 	}
@@ -104,6 +165,91 @@ func createCizzor(ctx *fiber.Ctx) error {
 		})
 }
 
+func updateCizzor(ctx *fiber.Ctx) error {
+	ctx.Accepts("application/json")
+
+	var cizzor models.Cizzor
+	var err error
+
+	if err := ctx.BodyParser(&cizzor); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Error parsing json " + err.Error(),
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	cizzor, err = models.UpdateCizzor(cizzor)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not update cizzor",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(
+		JsonResponse{
+			Status:  "success",
+			Message: "Cizzor updated",
+			Data:    cizzor,
+		})
+}
+
+func deleteCizzor(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	var err error
+
+	cizzorId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not parse id",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	err = models.DeleteCizzor(cizzorId)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			JsonResponse{
+				Status:  "error",
+				Message: "Could not delete cizzor",
+				Data:    []models.Cizzor{},
+			})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(
+		JsonResponse{
+			Status:  "success",
+			Message: "Cizzor deleted",
+			Data:    []models.Cizzor{},
+		})
+}
+
+func pingURL(ctx *fiber.Ctx, url string) error {
+	resp := ctx.Get(url)
+
+	fmt.Println(resp)
+
+	return nil
+}
+
+// if err != nil {
+// 	return err
+// }
+// defer resp.Body()
+
+// if resp.StatusCode() != fiber.StatusOK {
+// 	return fmt.Errorf("received non-200 status code: %d", resp.StatusCode())
+// }
+
+// return nil
+// }
+
 func SetupAndListen() {
 	fmt.Println("Setting up server...")
 
@@ -114,9 +260,12 @@ func SetupAndListen() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	router.Get("/", getAllRedirects)
-	router.Get("/:id", getCizzorById)
-	router.Post("/", createCizzor)
+	router.Get("/cz", getAllRedirects)
+	router.Get("/cz/:id", getCizzorById)
+	router.Post("/cz", createCizzor)
+	router.Put("/cz/:id", updateCizzor)
+	router.Get("/:shorturl", redirectCizzor)
+	router.Delete("/cz/:id", deleteCizzor)
 
 	router.Listen(":3001")
 }

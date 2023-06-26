@@ -3,7 +3,10 @@ module github.com/codeflames/cizzors
 go 1.19
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v2 v2.47.0
+	github.com/joho/godotenv v1.5.1
+	golang.org/x/crypto v0.10.0
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.1
 )
@@ -24,11 +27,11 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
 	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee // indirect
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.47.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/crypto v0.8.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/text v0.10.0 // indirect
 )

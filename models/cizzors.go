@@ -1,5 +1,12 @@
 package models
 
+import (
+	"errors"
+	"fmt"
+
+	"gorm.io/gorm"
+)
+
 func GetAllCizzors() ([]Cizzor, error) {
 	var cizzors []Cizzor
 
@@ -42,13 +49,34 @@ func CreateCizzor(cizzor Cizzor) (Cizzor, error) {
 	return cizzor, nil
 }
 
+// func UpdateCizzor(cizzor Cizzor) (Cizzor, error) {
+// 	tx := db.Save(&cizzor)
+// 	if tx.Error != nil {
+// 		return Cizzor{}, tx.Error
+// 	}
+
+// 	return cizzor, nil
+// }
+
 func UpdateCizzor(cizzor Cizzor) (Cizzor, error) {
-	tx := db.Save(&cizzor)
-	if tx.Error != nil {
-		return Cizzor{}, tx.Error
+	// Find the existing cizzor by ID
+	existingCizzor := Cizzor{}
+	if err := db.First(&existingCizzor, cizzor.ID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return Cizzor{}, fmt.Errorf("cizzor not found")
+		}
+		return Cizzor{}, err
 	}
 
-	return cizzor, nil
+	// Exclude the ID field from update
+	cizzor.ID = existingCizzor.ID
+
+	// Perform the update
+	if err := db.Model(&existingCizzor).Updates(cizzor).Error; err != nil {
+		return Cizzor{}, err
+	}
+
+	return existingCizzor, nil
 }
 
 func DeleteCizzor(id uint64) error {

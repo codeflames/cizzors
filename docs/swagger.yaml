@@ -1,10 +1,6 @@
 definitions:
   models.Cizzor:
     properties:
-      click_sources:
-        items:
-          $ref: '#/definitions/models.ClickSource'
-        type: array
       count:
         type: integer
       created_at:

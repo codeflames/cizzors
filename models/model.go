@@ -30,7 +30,7 @@ type Cizzor struct {
 	Count        int           `json:"count"`
 	Random       bool          `json:"random"`
 	OwnerId      uint64        `json:"owner_id" gorm:"foreignKey:UserID"`
-	ClickSources []ClickSource `json:"click_sources" gorm:"foreignKey:CizzorID"`
+	ClickSources []ClickSource `json:"-" gorm:"foreignKey:CizzorID"`
 	CreatedAt    time.Time     `json:"created_at" gorm:"type:timestamp with time zone;autoCreateTime"`
 	UpdatedAt    time.Time     `json:"updated_at" gorm:"type:timestamp with time zone;autoUpdateTime"`
 }
@@ -59,6 +59,13 @@ func Setup() {
 		log.Fatal("Error loading .env file")
 	}
 
+	// host := os.Getenv("DB_HOST")
+	// host, err := os.Hostname()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Println(host)
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")

@@ -775,12 +775,6 @@ const docTemplate = `{
         "models.Cizzor": {
             "type": "object",
             "properties": {
-                "click_sources": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.ClickSource"
-                    }
-                },
                 "count": {
                     "type": "integer"
                 },

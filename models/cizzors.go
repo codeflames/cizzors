@@ -90,10 +90,10 @@ func GetAllCizzors(userID uint64) ([]Cizzor, error) {
 	return cizzors, nil
 }
 
-func GetCizzorById(userID, id uint64) (Cizzor, error) {
+func GetCizzorById(id uint64) (Cizzor, error) {
 	var cizzor Cizzor
 
-	tx := db.Where("owner_id = ? AND id = ?", userID, id).First(&cizzor)
+	tx := db.Where("id = ?", id).First(&cizzor)
 	if tx.Error != nil {
 		return Cizzor{}, tx.Error
 	}
@@ -131,8 +131,8 @@ func UpdateCizzor(userID uint64, cizzor Cizzor) (Cizzor, error) {
 	return existingCizzor, nil
 }
 
-func DeleteCizzor(userID, id uint64) error {
-	tx := db.Where("owner_id = ? AND id = ?", userID, id).Delete(&Cizzor{})
+func DeleteCizzor(id uint64) error {
+	tx := db.Where("id = ?", id).Delete(&Cizzor{})
 	// For hard delete use
 	//tx := db.Unscoped().Where("owner_id = ? AND id = ?", userID, id).Delete(&Cizzor{})
 	if tx.Error != nil {

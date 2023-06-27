@@ -37,6 +37,11 @@ func SetupAndListen() {
 	//swagger
 	router.Get("/swagger/*", fiberSwagger.WrapHandler) // Path to the generated OpenAPI spec
 
+	// index route
+	router.Get("/", func(c *fiber.Ctx) error {
+		return c.Send([]byte("Welcome to Cizzors API"))
+	})
+
 	// user routes
 	router.Post("/register", middlewares.HashingMiddleware, createUser)
 	router.Post("/login", middlewares.LoginHashingMiddleware, loginUser)

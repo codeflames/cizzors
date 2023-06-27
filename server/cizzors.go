@@ -209,7 +209,7 @@ func getCizzorById(ctx *fiber.Ctx) error {
 
 	currentUser := ctx.Locals("user").(models.User)
 
-	cizzor, err = models.GetCizzorById(currentUser.ID, cizzorId)
+	cizzor, err = models.GetCizzorById(cizzorId)
 	if err != nil {
 		if err.Error() == "record not found" {
 			return ctx.Status(fiber.StatusNotFound).JSON(
@@ -224,6 +224,14 @@ func getCizzorById(ctx *fiber.Ctx) error {
 				Message: "Could not get cizzor " + err.Error(),
 			})
 	}
+	if cizzor.OwnerId != currentUser.ID {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "Unauthorized",
+			})
+	}
+
 	cizzorData, err := models.GetClickSources(currentUser.ID, cizzorId)
 
 	if err != nil {
@@ -359,7 +367,7 @@ func updateCizzor(ctx *fiber.Ctx) error {
 	currentUser := ctx.Locals("user").(models.User)
 
 	// get the cizzor from the database
-	existingCizzor, err := models.GetCizzorById(currentUser.ID, cizzorId)
+	existingCizzor, err := models.GetCizzorById(cizzorId)
 	if err != nil {
 		if err.Error() == "record not found" {
 			return ctx.Status(fiber.StatusNotFound).JSON(
@@ -372,6 +380,14 @@ func updateCizzor(ctx *fiber.Ctx) error {
 			ErrorResponse{
 				Status:  "error",
 				Message: "could not get cizzor: " + err.Error(),
+			})
+	}
+
+	if existingCizzor.OwnerId != currentUser.ID {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "you are not authorized to update this cizzor",
 			})
 	}
 
@@ -420,7 +436,31 @@ func deleteCizzor(ctx *fiber.Ctx) error {
 	}
 	currentUser := ctx.Locals("user").(models.User)
 
-	err = models.DeleteCizzor(currentUser.ID, cizzorId)
+	getExistingCizzor, err := models.GetCizzorById(cizzorId)
+	if err != nil {
+		if err.Error() == "record not found" {
+			return ctx.Status(fiber.StatusNotFound).JSON(
+				ErrorResponse{
+					Status:  "error",
+					Message: err.Error(),
+				})
+		}
+		return ctx.Status(fiber.StatusInternalServerError).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "Could not get cizzor, " + err.Error(),
+			})
+	}
+
+	if getExistingCizzor.OwnerId != currentUser.ID {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "You are not authorized to delete this cizzor",
+			})
+	}
+
+	err = models.DeleteCizzor(cizzorId)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(
 			JsonResponse{

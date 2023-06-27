@@ -4,12 +4,12 @@ package models
 
 import (
 	"fmt"
-	"log"
+	_ "log"
 	"time"
 
 	"os"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -54,10 +54,10 @@ var db *gorm.DB
 func Setup() {
 	var err error
 
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// err = godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	// host := os.Getenv("DB_HOST")
 	// host, err := os.Hostname()

@@ -16,7 +16,8 @@ func CreateUser(user User) (User, error) {
 
 func GetUserByID(id uint64) (User, error) {
 	var user User
-	result := db.First(&user, id)
+	// get the user if the id matches the record of the current user
+	result := db.Where("id = ?", id).First(&user)
 	if result.Error != nil {
 		return User{}, result.Error
 	}

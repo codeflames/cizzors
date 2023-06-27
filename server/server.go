@@ -9,7 +9,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	// "golang.org/x/crypto/bcrypt"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
+
+	_ "github.com/codeflames/cizzors/docs"
 )
 
 type JsonResponse struct {
@@ -32,6 +34,9 @@ func SetupAndListen() {
 	router.Use(compress.New())
 	router.Use(cache.New())
 
+	//swagger
+	router.Get("/swagger/*", fiberSwagger.WrapHandler) // Path to the generated OpenAPI spec
+
 	// user routes
 	router.Post("/register", middlewares.HashingMiddleware, createUser)
 	router.Post("/login", middlewares.LoginHashingMiddleware, loginUser)
@@ -42,7 +47,7 @@ func SetupAndListen() {
 	// cizzor routes
 	router.Get("/cz", middlewares.JwtMiddleware, getAllRedirects)
 	router.Get("/:short_url", redirectCizzor)
-	router.Get("/qrcode/generate/:short_url", generateQRCode)
+	router.Get("/cz/qr/:short_url", middlewares.JwtMiddleware, generateQRCode)
 	router.Get("/cz/:id", middlewares.JwtMiddleware, getCizzorById)
 	router.Post("/cz", middlewares.JwtMiddleware, createCizzor)
 	router.Put("/cz/:id", middlewares.JwtMiddleware, updateCizzor)

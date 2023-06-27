@@ -1,0 +1,594 @@
+definitions:
+  models.Cizzor:
+    properties:
+      click_sources:
+        items:
+          $ref: '#/definitions/models.ClickSource'
+        type: array
+      count:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      owner_id:
+        type: integer
+      random:
+        type: boolean
+      short_url:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
+  models.ClickSource:
+    properties:
+      cizzor_id:
+        type: integer
+      count:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      ip_address:
+        type: string
+      location:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  server.CreateAccountRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  server.CreateCizzorRequest:
+    properties:
+      random:
+        type: boolean
+      short_url:
+        type: string
+      url:
+        type: string
+    type: object
+  server.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  server.GetCizzorByIDResponse:
+    properties:
+      cizzor:
+        $ref: '#/definitions/models.Cizzor'
+      clicks_analytics:
+        $ref: '#/definitions/models.ClickSource'
+    type: object
+  server.JsonResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  server.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  server.LoginResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  server.UpdateCizzorRequest:
+    properties:
+      url:
+        type: string
+    type: object
+  server.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  server.UserUpdateRequest:
+    properties:
+      username:
+        type: string
+    type: object
+host: localhost:3001
+info:
+  contact:
+    email: yerekadonald@gmail.com
+    name: Yereka
+    url: https://github.com/codeflames/cizzors/issues
+  description: This is a simple url shortening api service.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Cizzors url shortener API
+  version: "1.0"
+paths:
+  /{short_url}:
+    get:
+      consumes:
+      - application/json
+      description: Redirects the user to the url of the cizzor
+      parameters:
+      - description: The short url of the cizzor
+        in: path
+        name: short_url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "307":
+          description: temporary redirect
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      summary: Redirects the user to the url of the cizzor
+      tags:
+      - Cizzors
+  /cz:
+    get:
+      consumes:
+      - application/json
+      description: Gets all the cizzors of the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All cizzors
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Cizzor'
+                  type: array
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Gets all the cizzors of the current user
+      tags:
+      - Cizzors
+    post:
+      consumes:
+      - application/json
+      description: Creates a cizzor
+      parameters:
+      - description: The cizzor to create
+        in: body
+        name: cizzor
+        required: true
+        schema:
+          $ref: '#/definitions/server.CreateCizzorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Cizzor'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Creates a cizzor
+      tags:
+      - Cizzors
+  /cz/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a cizzor
+      parameters:
+      - description: The cizzor id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Cizzor'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Deletes a cizzor
+      tags:
+      - Cizzors
+    get:
+      consumes:
+      - application/json
+      description: Gets a cizzor by id
+      parameters:
+      - description: The id of the cizzor
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.GetCizzorByIDResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Gets a cizzor by id
+      tags:
+      - Cizzors
+    put:
+      consumes:
+      - application/json
+      description: Updates a cizzor
+      parameters:
+      - description: The id of the cizzor
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: The cizzor to update
+        in: body
+        name: cizzor
+        required: true
+        schema:
+          $ref: '#/definitions/server.UpdateCizzorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Cizzor'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Updates a cizzor
+      tags:
+      - Cizzors
+  /cz/qr/{short_url}:
+    get:
+      consumes:
+      - application/json
+      description: Generates a qr code for the cizzor
+      parameters:
+      - description: The short url of the cizzor
+        in: path
+        name: short_url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: QR code image
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Generates a qr code for the cizzor
+      tags:
+      - Cizzors
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user.
+      parameters:
+      - description: LoginRequest
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/server.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.LoginResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Error logging in user
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      summary: Login user
+      tags:
+      - User
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user.
+      parameters:
+      - description: CreateAccountRequest
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/server.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.UserResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "409":
+          description: User already exists
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Could not create user
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      summary: Create user
+      tags:
+      - User
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.UserResponse'
+              type: object
+        "400":
+          description: Invalid user id
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Could not delete user
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Delete user
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get a user by id.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.UserResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Could not get user
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Get user by id
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UserUpdateRequest
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/server.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.JsonResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/server.UserResponse'
+              type: object
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+        "500":
+          description: Could not update user
+          schema:
+            $ref: '#/definitions/server.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Update user
+      tags:
+      - User
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

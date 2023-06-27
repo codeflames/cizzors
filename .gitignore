@@ -8,6 +8,8 @@
 *.so
 *.dylib
 
+
+
 # Test binary, built with `go test -c`
 *.test
 
@@ -19,3 +21,7 @@
 
 # Go workspace file
 go.work
+
+
+# ip database
+IP2LOCATION-LITE-DB1.IPV6.BIN

@@ -5,6 +5,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"os"
 
@@ -13,20 +14,34 @@ import (
 	"gorm.io/gorm"
 )
 
+type ClickSource struct {
+	ID        uint64    `json:"id" gorm:"primary_key"`
+	CizzorID  uint64    `json:"cizzor_id" gorm:"foreignKey:CizzorID"`
+	IpAddress string    `json:"ip_address" gorm:"not null"`
+	Location  string    `json:"location" gorm:"not null"`
+	Count     uint64    `json:"count"`
+	CreatedAt time.Time `json:"created_at" gorm:"type:timestamp with time zone;autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp with time zone;autoUpdateTime"`
+}
 type Cizzor struct {
-	ID       uint64 `json:"id" gorm:"primary_key"`
-	Url      string `json:"url" gorm:"not null"`
-	ShortUrl string `json:"short_url" gorm:"not null"`
-	Count    int    `json:"count"`
-	Random   bool   `json:"random"`
-	OwnerId  uint64 `json:"owner_id" gorm:"foreignKey:UserID"`
+	ID           uint64        `json:"id" gorm:"primary_key"`
+	Url          string        `json:"url" gorm:"not null"`
+	ShortUrl     string        `json:"short_url" gorm:"not null"`
+	Count        int           `json:"count"`
+	Random       bool          `json:"random"`
+	OwnerId      uint64        `json:"owner_id" gorm:"foreignKey:UserID"`
+	ClickSources []ClickSource `json:"click_sources" gorm:"foreignKey:CizzorID"`
+	CreatedAt    time.Time     `json:"created_at" gorm:"type:timestamp with time zone;autoCreateTime"`
+	UpdatedAt    time.Time     `json:"updated_at" gorm:"type:timestamp with time zone;autoUpdateTime"`
 }
 
 type User struct {
-	ID       uint64 `json:"id" gorm:"primary_key"`
-	Username string `json:"username" gorm:"not null;unique"`
-	Email    string `json:"email" gorm:"not null;unique"`
-	Password string `json:"password" gorm:"not null"`
+	ID        uint64    `json:"id" gorm:"primary_key"`
+	Username  string    `json:"username" gorm:"not null;unique"`
+	Email     string    `json:"email" gorm:"not null;unique"`
+	Password  string    `json:"password" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"type:timestamp with time zone;autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp with time zone;autoUpdateTime"`
 }
 
 // type LoginUserModel struct {
@@ -64,7 +79,7 @@ func Setup() {
 	// 	fmt.Println(err)
 	// }123456
 
-	err = db.AutoMigrate(&Cizzor{}, &User{})
+	err = db.AutoMigrate(&Cizzor{}, &User{}, &ClickSource{})
 	if err != nil {
 		fmt.Println(err)
 	} else {

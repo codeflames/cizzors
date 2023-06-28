@@ -116,7 +116,6 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:3001
 info:
   contact:
     email: yerekadonald@gmail.com

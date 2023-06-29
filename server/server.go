@@ -59,9 +59,7 @@ func SetupAndListen() {
 	// 	return c.SendFile("server/intro.html")
 
 	// })
-	router.Get("/", func(c *fiber.Ctx) error {
-		return c.SendFile("./public/intro.html")
-	})
+	router.Static("/static", "./public")
 
 	// Create a JWT middleware instance
 	jwtMiddleware := middlewares.JwtMiddleware

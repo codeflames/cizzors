@@ -6,7 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v2 v2.47.0
 	github.com/joho/godotenv v1.5.1
-	github.com/swaggo/fiber-swagger v1.3.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/swaggo/swag v1.16.1
 	golang.org/x/crypto v0.10.0
 	gorm.io/driver/postgres v1.5.2
@@ -21,11 +21,8 @@ require (
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
-	github.com/swaggo/files v1.0.1 // indirect
-	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect

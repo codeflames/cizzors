@@ -25,6 +25,7 @@ import (
 // @externalDocs.url          https://swagger.io/resources/open-api/
 
 func main() {
+	// Start the server
 	models.Setup()
 	server.SetupAndListen()
 }

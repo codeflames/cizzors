@@ -28,6 +28,10 @@ FROM alpine
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .
+# Copy the intro.html file
+COPY --from=builder /app/public ./public
+
+
 
 EXPOSE 3001
 

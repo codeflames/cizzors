@@ -12,7 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 
 	_ "github.com/codeflames/cizzors/docs"
 )
@@ -50,16 +49,18 @@ func SetupAndListen() {
 	router.Use(limiter.New(limiterConfig))
 
 	//swagger
-	router.Get("/swagger/*", fiberSwagger.WrapHandler) // Path to the generated OpenAPI spec
+	// Path to the generated OpenAPI spec
 
 	// index route
 	// router.Get("/", func(c *fiber.Ctx) error {
 	// 	// return c.Send([]byte("Welcome to Cizzors API \n To see the documentation visit: https://cizzors.onrender.com/swagger/index.html"))
 	// 	// return html
-	// 	return c.SendFile("server/intro.html")
+	// 	return c.SendFile("server/index.html")
 
 	// })
 	router.Static("/", "./public")
+
+	// router.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	// Create a JWT middleware instance
 	jwtMiddleware := middlewares.JwtMiddleware

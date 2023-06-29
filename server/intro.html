@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cizzors</title>
+</head>
+<body>
+    <h1>Cizzors</h1>
+    <p>Cizzors is a URL shortening service developed as the capstone project for the AltSchool Africa School of Back End Engineering. The project aims to disrupt the URL shortening industry by providing a simple tool to shorten URLs and customize them for branding purposes. Additionally, Cizzors offers QR code generation and basic analytics for tracking link performance.</p>
+
+<h2>Live Link</h2>
+<p>The live version of Cizzors can be accessed at <a href="https://cizzors.onrender.com">https://cizzors.onrender.com</a>.</p>
+
+<h2>Running the App Locally using Docker</h2>
+<p>To run the Cizzors app locally using Docker, follow these steps:</p>
+
+<ol>
+    <li>Ensure that Docker is installed on your system. You can download and install Docker from the official website: <a href="https://www.docker.com/get-started">https://www.docker.com/get-started</a>.</li>
+    <li>Clone the Cizzors repository from GitHub using the following command:</li>
+</ol>
+<pre><code>git clone https://github.com/your-username/cizzors.git</code></pre>
+
+<ol start="3">
+    <li>Navigate to the cloned repository directory:</li>
+</ol>
+<pre><code>cd cizzors</code></pre>
+
+<ol start="4">
+    <li>Build the Docker image using the provided Dockerfile:</li>
+</ol>
+<pre><code>docker build -t cizzors-app .</code></pre>
+
+<ol start="5">
+    <li>Once the image is built successfully, you can run the Docker container:</li>
+</ol>
+<pre><code>docker run -p 8080:8080 cizzors-app</code></pre>
+
+<p>The Cizzors app should now be running locally on port 8080. You can access it in your browser by visiting <a href="http://localhost:8080">http://localhost:8080</a>.</p>
+
+<p>Please note that the above steps assume that you have cloned the Cizzors repository and have Docker installed on your machine. Adjust the commands accordingly based on your environment and repository configuration.</p>
+
+<p>This project was developed as the capstone project for the AltSchool Africa School of Back End Engineering.</p>
+</body>
+</html>

@@ -8,7 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/patrickmn/go-cache"
 
-	// "github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -57,7 +56,8 @@ func SetupAndListen() {
 	router.Get("/", func(c *fiber.Ctx) error {
 		// return c.Send([]byte("Welcome to Cizzors API \n To see the documentation visit: https://cizzors.onrender.com/swagger/index.html"))
 		// return html
-		return c.SendFile("./server/intro.html", true)
+		return c.SendFile("server/intro.html")
+
 	})
 
 	// Create a JWT middleware instance

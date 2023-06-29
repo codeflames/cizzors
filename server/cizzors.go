@@ -363,6 +363,13 @@ func updateCizzor(ctx *fiber.Ctx) error {
 	// 	ID:  cizzorId,
 	// 	Url: cizzor.Url,
 	// }
+	if err = utils.PingURL(request.Url); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "Invalid url",
+			})
+	}
 
 	currentUser := ctx.Locals("user").(models.User)
 

@@ -1,5 +1,13 @@
 package utils
 
+import (
+	"fmt"
+	"os"
+)
+
 func GetFullCizzorUrl(shortUrl string) string {
-	return "http://localhost:3001/" + shortUrl
+	baseUrl := os.Getenv("BASE_URL")
+	url := baseUrl + "/" + shortUrl
+	fmt.Println(url)
+	return url
 }

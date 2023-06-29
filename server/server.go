@@ -13,6 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
+	fiberSwagger "github.com/swaggo/fiber-swagger"
+
 	_ "github.com/codeflames/cizzors/docs"
 )
 
@@ -60,7 +62,7 @@ func SetupAndListen() {
 	// })
 	router.Static("/", "./public")
 
-	// router.Get("/swagger/*", fiberSwagger.WrapHandler)
+	router.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	// Create a JWT middleware instance
 	jwtMiddleware := middlewares.JwtMiddleware

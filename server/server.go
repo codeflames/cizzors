@@ -53,12 +53,13 @@ func SetupAndListen() {
 	router.Get("/swagger/*", fiberSwagger.WrapHandler) // Path to the generated OpenAPI spec
 
 	// index route
-	router.Get("/", func(c *fiber.Ctx) error {
-		// return c.Send([]byte("Welcome to Cizzors API \n To see the documentation visit: https://cizzors.onrender.com/swagger/index.html"))
-		// return html
-		return c.SendFile("server/intro.html")
+	// router.Get("/", func(c *fiber.Ctx) error {
+	// 	// return c.Send([]byte("Welcome to Cizzors API \n To see the documentation visit: https://cizzors.onrender.com/swagger/index.html"))
+	// 	// return html
+	// 	return c.SendFile("server/intro.html")
 
-	})
+	// })
+	router.Static("/", "./public")
 
 	// Create a JWT middleware instance
 	jwtMiddleware := middlewares.JwtMiddleware

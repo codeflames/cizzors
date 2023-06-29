@@ -2,11 +2,26 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/ip2location/ip2location-go/v9"
 )
 
-func GetLocation(ipAddress string) (string, error) {
+func GetLocation(c *fiber.Ctx) (string, string, error) {
+
+	ipAddress := ""
+
+	// Check if the X-Forwarded-For header exists
+	if xff := c.Get(fiber.HeaderXForwardedFor); xff != "" {
+		// Split the header value to get the client IP address
+		ip := strings.Split(xff, ",")[0]
+		fmt.Printf("Client IP: %s\n", ip)
+	} else {
+		// X-Forwarded-For header doesn't exist, use RemoteIP
+		ipAddress = c.IP()
+		fmt.Printf("Client IP: %s\n", ipAddress)
+	}
 
 	// This site or product includes IP2Location LITE data available from "https://lite.ip2location.com"
 
@@ -14,19 +29,19 @@ func GetLocation(ipAddress string) (string, error) {
 
 	if err != nil {
 		fmt.Print(err)
-		return "", err
+		return "", "", err
 	}
 
 	results, err := db.Get_all(ipAddress)
 
 	if err != nil {
 		fmt.Print(err)
-		return "", err
+		return "", "", err
 	}
 
 	fmt.Printf("country_short: %s\n", results.Country_short)
 	fmt.Printf("country_long: %s\n", results.Country_long)
 
-	return results.Country_long, nil
+	return results.Country_long, ipAddress, nil
 
 }

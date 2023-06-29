@@ -3,10 +3,13 @@ package server
 import (
 	"fmt"
 	"strconv"
+	"time"
 
+	"github.com/codeflames/cizzors/middlewares"
 	"github.com/codeflames/cizzors/models"
 	"github.com/codeflames/cizzors/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/patrickmn/go-cache"
 	"github.com/skip2/go-qrcode"
 )
 
@@ -32,13 +35,20 @@ type CreateCizzorRequest struct {
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /{short_url} [get]
-func redirectCizzor(ctx *fiber.Ctx) error {
+func redirectCizzor(ctx *fiber.Ctx, cache *cache.Cache) error {
 	shortUrl := ctx.Params("short_url")
 
+	// Generate the cache key
+	cacheKey := middlewares.GenerateCacheKey(ctx)
+
+	// Check if the response is already in the cache
+	if cached, found := cache.Get(cacheKey); found {
+		fmt.Println("Cache hit for", cacheKey)
+		// Return the cached response
+		return ctx.Redirect(cached.(string), fiber.StatusTemporaryRedirect)
+	}
+
 	cizzor, err := models.GetCizzorByShortUrl(shortUrl)
-
-	fmt.Println("initial cizzor: ", cizzor)
-
 	if err != nil {
 		if err.Error() == "record not found" {
 			return ctx.Status(fiber.StatusNotFound).JSON(
@@ -54,19 +64,13 @@ func redirectCizzor(ctx *fiber.Ctx) error {
 			})
 	}
 
-	ipAddress := ctx.IP()
-	location, err := utils.GetLocation(ipAddress)
-
+	location, ipAddress, err := utils.GetLocation(ctx)
 	if err != nil {
 		fmt.Println("Could not get location: ", err)
 	}
 
 	cizzor.UpdateClickSourceCount(ipAddress, location)
-
-	// Increase the count of the cizzor
 	cizzor.Count++
-
-	fmt.Println("updated cizzor: ", cizzor)
 
 	cizzor, err = models.UpdateCizzorCount(cizzor)
 	if err != nil {
@@ -77,8 +81,59 @@ func redirectCizzor(ctx *fiber.Ctx) error {
 			})
 	}
 
+	// Cache the response
+	cache.Set(cacheKey, cizzor.Url, 10*time.Minute)
+	fmt.Println("Cache miss for", cacheKey)
+
 	return ctx.Redirect(cizzor.Url, fiber.StatusTemporaryRedirect)
 }
+
+// func redirectCizzor(ctx *fiber.Ctx) error {
+// 	shortUrl := ctx.Params("short_url")
+
+// 	cizzor, err := models.GetCizzorByShortUrl(shortUrl)
+
+// 	fmt.Println("initial cizzor: ", cizzor)
+
+// 	if err != nil {
+// 		if err.Error() == "record not found" {
+// 			return ctx.Status(fiber.StatusNotFound).JSON(
+// 				ErrorResponse{
+// 					Status:  "error",
+// 					Message: err.Error(),
+// 				})
+// 		}
+// 		return ctx.Status(fiber.StatusInternalServerError).JSON(
+// 			ErrorResponse{
+// 				Status:  "error",
+// 				Message: "Could not get cizzor, " + err.Error(),
+// 			})
+// 	}
+
+// 	location, ipAddress, err := utils.GetLocation(ctx)
+
+// 	if err != nil {
+// 		fmt.Println("Could not get location: ", err)
+// 	}
+
+// 	cizzor.UpdateClickSourceCount(ipAddress, location)
+
+// 	// Increase the count of the cizzor
+// 	cizzor.Count++
+
+// 	fmt.Println("updated cizzor: ", cizzor)
+
+// 	cizzor, err = models.UpdateCizzorCount(cizzor)
+// 	if err != nil {
+// 		return ctx.Status(fiber.StatusInternalServerError).JSON(
+// 			ErrorResponse{
+// 				Status:  "error",
+// 				Message: "Could not update cizzor count",
+// 			})
+// 	}
+
+// 	return ctx.Redirect(cizzor.Url, fiber.StatusTemporaryRedirect)
+// }
 
 // gets all the cizzors of the current user
 // @Summary Gets all the cizzors of the current user
@@ -100,7 +155,7 @@ func getAllRedirects(ctx *fiber.Ctx) error {
 			return ctx.Status(fiber.StatusNotFound).JSON(
 				ErrorResponse{
 					Status:  "error",
-					Message: err.Error(),
+					Message: "na here e happen" + err.Error(),
 				})
 		}
 		return ctx.Status(fiber.StatusInternalServerError).JSON(
@@ -363,6 +418,13 @@ func updateCizzor(ctx *fiber.Ctx) error {
 	// 	ID:  cizzorId,
 	// 	Url: cizzor.Url,
 	// }
+	if err = utils.PingURL(request.Url); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(
+			ErrorResponse{
+				Status:  "error",
+				Message: "Invalid url",
+			})
+	}
 
 	currentUser := ctx.Locals("user").(models.User)
 

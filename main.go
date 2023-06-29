@@ -17,8 +17,6 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:3001
-
 //@securityDefinitions.apikey Bearer
 //@in header
 //@name Authorization
@@ -27,6 +25,7 @@ import (
 // @externalDocs.url          https://swagger.io/resources/open-api/
 
 func main() {
+	// Start the server
 	models.Setup()
 	server.SetupAndListen()
 }

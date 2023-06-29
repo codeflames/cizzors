@@ -57,7 +57,7 @@ func SetupAndListen() {
 	router.Get("/", func(c *fiber.Ctx) error {
 		// return c.Send([]byte("Welcome to Cizzors API \n To see the documentation visit: https://cizzors.onrender.com/swagger/index.html"))
 		// return html
-		return c.SendFile("./index.html", true)
+		return c.SendFile("./server/intro.html", true)
 	})
 
 	// Create a JWT middleware instance

@@ -8,7 +8,7 @@ Cizzors is a URL shortening service developed as the capstone project for the Al
 Live Link
 ---------
 
-The live version of Cizzors can be accessed at [https://cizzors.onrender.com](https://cizzors.onrender.com).
+The live version of Cizzors API can be accessed at [CIZZORS](https://cizzors.onrender.com).
 
 Running the App Locally using Docker
 ------------------------------------
@@ -18,7 +18,7 @@ To run the Cizzors app locally using Docker, follow these steps:
 1.  Ensure that Docker is installed on your system. You can download and install Docker from the official website: [https://www.docker.com/get-started](https://www.docker.com/get-started).
 2.  Clone the Cizzors repository from GitHub using the following command:
 
-    git clone https://github.com/your-username/cizzors.git
+    ```git clone https://github.com/your-username/cizzors.git```
 
 3.  Navigate to the cloned repository directory:
 
@@ -26,13 +26,13 @@ To run the Cizzors app locally using Docker, follow these steps:
 
 4.  Build the Docker image using the provided Dockerfile:
 
-    docker build -t cizzors-app .
+    `docker build -t cizzors-app .`
 
 5.  Once the image is built successfully, you can run the Docker container:
 
-    docker run -p 8080:8080 cizzors-app
+    `docker run -p 3001:3001 cizzors-app`
 
-The Cizzors app should now be running locally on port 8080. You can access it in your browser by visiting [http://localhost:8080](http://localhost:8080).
+The Cizzors app should now be running locally on port 3001. You can access it in your browser by visiting [http://localhost:3001](http://localhost:3001).
 
 Please note that the above steps assume that you have cloned the Cizzors repository and have Docker installed on your machine. Adjust the commands accordingly based on your environment and repository configuration.
 

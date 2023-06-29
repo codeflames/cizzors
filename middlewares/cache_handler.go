@@ -1,57 +1,3 @@
-// package middlewares
-
-// import (
-// 	"encoding/json"
-// 	"fmt"
-// 	"time"
-
-// 	"github.com/gofiber/fiber/v2"
-// 	"github.com/patrickmn/go-cache"
-// )
-
-// type JsonResponse struct {
-// 	Status  string      `json:"status"`
-// 	Message string      `json:"message"`
-// 	Data    interface{} `json:"data"`
-// }
-
-// func CacheMiddleware(cache *cache.Cache) fiber.Handler {
-// 	return func(c *fiber.Ctx) error {
-// 		if c.Method() != "GET" {
-// 			// Only cache GET requests
-// 			return c.Next()
-// 		}
-
-// 		cacheKey := c.Path() + "?" + c.Params("id") // Generate a cache key from the request path and query parameters
-
-// 		// Check if the response is already in the cache
-// 		if cached, found := cache.Get(cacheKey); found {
-// 			fmt.Println("cache hit")
-// 			return c.JSON(cached)
-// 		}
-// 		err := c.Next()
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		var data JsonResponse
-// 		cacheKey = c.Path() + "?" + c.Params("id")
-
-// 		body := c.Response().Body()
-// 		err = json.Unmarshal(body, &data)
-// 		if err != nil {
-// 			return c.JSON(fiber.Map{"error": err.Error()})
-// 		}
-
-// 		// Cache the response for 10 minutes
-// 		cache.Set(cacheKey, data, 10*time.Minute)
-
-// 		fmt.Println("cache miss")
-
-// 		return nil
-// 	}
-// }
-
 package middlewares
 
 import (
@@ -71,18 +17,25 @@ func CacheMiddleware(cache *cache.Cache) fiber.Handler {
 			return c.Next()
 		}
 
-		cacheKey := generateCacheKey(c)
+		cacheKey := GenerateCacheKey(c)
 
 		// Check if the response is already in the cache
 		if cached, found := cache.Get(cacheKey); found {
 			fmt.Println("cache hit")
-			c.Response().Header.Set("X-Cache-Status", "hit") // Set custom header for cache hit
+			c.Response().Header.Set("X-Cache-Status", "hit")
+			// Set custom header for cache hit
 			return c.JSON(cached)
 		}
 
 		err := c.Next()
 		if err != nil {
 			return err
+		}
+
+		// Check if the response is an error
+		if c.Response().StatusCode() >= 400 {
+			fmt.Println("cache skip due to error response")
+			return nil
 		}
 
 		var data interface{}
@@ -106,16 +59,22 @@ func CacheMiddleware(cache *cache.Cache) fiber.Handler {
 	}
 }
 
-func generateCacheKey(c *fiber.Ctx) string {
+func GenerateCacheKey(c *fiber.Ctx) string {
 	// Generate a cache key from the request path and query parameters
 	cacheKey := c.Path()
 
-	// Exclude query parameters from cache key for PUT and POST requests
-	if c.Method() != fiber.MethodGet {
-		cacheKey = strings.Split(cacheKey, "?")[0]
-	}
+	// check to see if query params has :short_url
+	if c.Params("short_url") != "" {
 
-	return cacheKey
+		// Exclude query parameters from cache key for PUT and POST requests
+		if c.Method() != fiber.MethodGet {
+			cacheKey = strings.Split(cacheKey, "?")[0]
+		}
+
+		return cacheKey
+	} else {
+		return cacheKey + "?" + c.Params("short_url")
+	}
 }
 
 // Create a custom middleware to invalidate cache for PUT and POST requests

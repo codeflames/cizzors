@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cizzors - URL Shortening Service</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    /* Inline CSS styles */
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hero {
+      background-color: #4285f4;
+      color: #fff;
+      text-align: center;
+      padding: 100px 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-top: 0;
+    }
+
+    p {
+      font-size: 20px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .features {
+      background-color: #f8f8f8;
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .features h2 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+
+    .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .feature img {
+      width: 240px;
+      height: 240px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .feature h3 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      font-size: 18px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 80px 0;
+      background-color: #fff;
+    }
+
+    .cta h2 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+
+    .cta .button {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background-color: #4285f4;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .footer {
+      background-color: #f8f8f8;
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .footer p {
+      font-size: 18px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .social-icons {
+      margin-top: 30px;
+    }
+
+    .social-icons a {
+      display: inline-block;
+      margin-right: 10px;
+      color: #333333;
+      font-size: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: #4285f4;
+      transform: rotate(360deg);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero">
+    <div class="container">
+      <h1>Cizzors</h1>
+      <p>A simple and powerful URL shortening service</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="features">
+      <h2>Key Features</h2>
+      <div class="feature">
+        <img src="https://images.pexels.com/photos/4268553/pexels-photo-4268553.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="URL Shortening">
+        <h3>URL Shortening</h3>
+        <p>Shorten long URLs with just a click, making them easier to share and remember.</p>
+      </div>
+      <div class="feature">
+        <img src="https://images.pexels.com/photos/461035/pexels-photo-461035.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Custom URLs">
+        <h3>Custom URLs</h3>
+        <p>Create branded short links with custom domain names to reinforce your brand identity.</p>
+      </div>
+      <div class="feature">
+        <img src="https://images.pexels.com/photos/12935064/pexels-photo-12935064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="QR Code Generation">
+        <h3>QR Code Generation</h3>
+        <p>Generate QR codes for your shortened URLs to enhance offline marketing and engagement.</p>
+      </div>
+      <div class="feature">
+        <img src="https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Analytics">
+        <h3>Analytics</h3>
+        <p>Track link performance with basic analytics and gain insights into click-through rates.</p>
+      </div>
+      <div class="feature">
+        <img src="https://images.pexels.com/photos/16566150/pexels-photo-16566150/free-photo-of-old-artisan-showing-vintage-and-antique-artifacts-in-wooden-drawers.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Link History">
+        <h3>Link History</h3>
+        <p>Access and manage your previously created links easily for efficient link management.</p>
+      </div>
+    </div>
+
+    <div class="cta">
+      <a href="https://cizzors.onrender.com/swagger/index.html" class="button">API Documentation</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>This project was developed as the capstone project for the AltSchool Africa School of Back End Engineering.</p>
+    <div class="social-icons">
+      <a href="#" target="_blank"><i class="material-icons">twitter</i></a>
+      <a href="#" target="_blank"><i class="material-icons">facebook</i></a>
+      <a href="#" target="_blank"><i class="material-icons">instagram</i></a>
+    </div>
+  </div>
+
+  <script>
+    // Inline JavaScript for interactivity and modern effects
+
+    // Add Material Icons dynamically
+    const materialIconsLink = document.createElement('link');
+    materialIconsLink.rel = 'stylesheet';
+    materialIconsLink.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+    document.head.appendChild(materialIconsLink);
+
+    // Smooth scroll effect for anchor links
+    document.addEventListener('DOMContentLoaded', () => {
+      const scrollLinks = document.querySelectorAll('a[href^="#"]');
+      for (const link of scrollLinks) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(link.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

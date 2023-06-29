@@ -59,7 +59,7 @@ func SetupAndListen() {
 	// 	return c.SendFile("server/intro.html")
 
 	// })
-	router.Static("/static", "./public")
+	router.Static("/", "./public")
 
 	// Create a JWT middleware instance
 	jwtMiddleware := middlewares.JwtMiddleware

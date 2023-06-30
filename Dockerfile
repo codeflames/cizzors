@@ -30,6 +30,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/.env .
 # Copy the intro.html file
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/IP2LOCATION-LITE-DB1.IPV6.BIN ./IP2LOCATION-LITE-DB1.IPV6.BIN
 
 
 
